@@ -1,6 +1,31 @@
 import React from "react";
+import { useEffect, useState } from "react";
 
 export default function CurrentWeather() {
+  const [state, setState] = useState({
+    weather: null,
+    weather_Update: null,
+    weather_Feedback: null,
+    weather_image: null,
+  });
+
+  const updateWeather = async () => {
+    const url =
+      "https://api.weatherapi.com/v1/current.json?key=2bd5b807986a48c8b8d132658210809&q=Bijnor&aqi=no";
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    setState({
+      weather: parsedData.current.temp_c,
+      weather_Update: parsedData.current.last_updated,
+      weather_Feedback: parsedData.current.condition.text,
+      weather_image: parsedData.current.condition.icon,
+    });
+  };
+
+  useEffect(() => {
+    updateWeather();
+  }, []);
+
   return (
     <div
       style={{
@@ -28,12 +53,12 @@ export default function CurrentWeather() {
           alt="..."
         />
         <div class="card-img-overlay">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">
-            This is a wider card with supporting text below as a natural lead-in
-            to additional content. This content is a little bit longer.
-          </p>
-          <p class="card-text">Last updated 3 mins ago</p>
+          <h1 class="card-title">
+            <img src={state.weather_image} alt="Something went wrong" />{" "}
+            {state.weather} °C{" "}
+          </h1>
+          <p class="card-text"> {state.weather_Feedback} </p>
+          <p class="card-text">Last updated {state.weather_Update} </p>
         </div>
       </div>
     </div>
