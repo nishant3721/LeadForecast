@@ -1,12 +1,12 @@
 import "./App.css";
+import CurrentWeather from "./Components/CurrentWeather";
 import Navbar from "./Components/Navbar";
-import Weather from "./Components/Weather";
 
 function App() {
   return (
     <>
       <Navbar title="LeadForecast" />
-      <Weather />
+      <CurrentWeather />
     </>
   );
 }

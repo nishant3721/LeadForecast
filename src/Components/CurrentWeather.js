@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Weather() {
+export default function CurrentWeather() {
   return (
     <div className="my-5 container">
       <form className="d-flex">
