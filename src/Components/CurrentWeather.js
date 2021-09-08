@@ -1,6 +1,9 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import location from "./location.png";
+import wind from "./wind.png";
+import visibility from "./visibility.png";
+import humidity from "./humidity.png";
 
 export default function CurrentWeather() {
   const [state, setState] = useState({
@@ -11,6 +14,10 @@ export default function CurrentWeather() {
     weather_Location_City: null,
     weather_Location_State: null,
     weather_Location_Country: null,
+    weather_FeelsLike: null,
+    weather_Humidity: null,
+    weather_Wind: null,
+    weather_Visibility: null,
   });
 
   const updateWeather = async () => {
@@ -26,6 +33,10 @@ export default function CurrentWeather() {
       weather_Location_City: parsedData.location.name,
       weather_Location_State: parsedData.location.region,
       weather_Location_Country: parsedData.location.country,
+      weather_FeelsLike: parsedData.current.feelslike_c,
+      weather_Humidity: parsedData.current.humidity,
+      weather_Wind: parsedData.current.wind_kph,
+      weather_Visibility: parsedData.current.vis_km,
     });
   };
 
@@ -37,7 +48,7 @@ export default function CurrentWeather() {
     <div
       style={{
         margin: "auto",
-        width: "60%",
+        width: "50%",
       }}
       className="my-3"
     >
@@ -59,21 +70,37 @@ export default function CurrentWeather() {
           alt="..."
         />
         <div className="card-img-overlay">
-          <p className="card-title">
-            <img src={location} alt="Something went wrong" />{" "}
-            {state.weather_Location_City}, {state.weather_Location_State},{" "}
-            {state.weather_Location_Country}
+          <p className="text-end card-title">
+            <img src={location} alt="..." /> {state.weather_Location_City},{" "}
+            {state.weather_Location_State}, {state.weather_Location_Country}
           </p>
-          <h1 className="mt-5 card-title">
-            {state.weather} °C{" "}
-            <img src={state.weather_image} alt="Something went wrong" />
+          <h1 className="card-title">
+            {state.weather} °C <img src={state.weather_image} alt="..." />
           </h1>
-          <p className="card-text"> {state.weather_Feedback} </p>
+          <h5 className="card-text"> {state.weather_Feedback} </h5>
+          <p className="card-text">Feels Like {state.weather_FeelsLike} °C</p>
           <p className="card-text">
-            <small class="text-muted">
+            <small className="text-muted">
               Last updated {state.weather_Update}
             </small>
           </p>
+          <div
+            style={{
+              position: "absolute",
+              left: "37%",
+              top: "15%",
+            }}
+          >
+            <p className="card-text">
+              <img src={humidity} alt="..." /> {state.weather_Humidity} %
+            </p>
+            <p className="my-4 card-text">
+              <img src={wind} alt="..." /> {state.weather_Wind} Kph
+            </p>
+            <p className="card-text">
+              <img src={visibility} alt="..." /> {state.weather_Visibility} Km
+            </p>
+          </div>
         </div>
       </div>
     </div>
