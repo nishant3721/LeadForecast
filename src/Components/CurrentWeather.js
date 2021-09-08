@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import "../index.css";
 
 export default function CurrentWeather() {
   const [state, setState] = useState({
@@ -27,13 +28,10 @@ export default function CurrentWeather() {
   }, []);
 
   return (
+    <div id="container">
     <div
-      style={{
-        margin: "auto",
-        width: "40%",
-      }}
-      className="my-5"
-    >
+      
+      className="my-5">
       <form className="d-flex">
         <input
           className="form-control me-2"
@@ -61,6 +59,11 @@ export default function CurrentWeather() {
           <p class="card-text">Last updated {state.weather_Update} </p>
         </div>
       </div>
-    </div>
+     
+    </div> <div className="ocean">
+          <div className="wave"></div>
+          <div className="wave"></div>
+        </div></div>
+    
   );
 }

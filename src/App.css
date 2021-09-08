@@ -1,0 +1,12 @@
+#image{
+     max-width: 4rem;
+     max-height: 4rem;
+}
+.container-fluid{
+     margin: 0;
+     background: rgb(147, 221, 243);
+}
+#navbarSupportedContent{
+     margin-right: 100%;
+     
+}
