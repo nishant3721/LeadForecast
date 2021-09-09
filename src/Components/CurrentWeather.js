@@ -6,26 +6,10 @@ import visibility from "./visibility.png";
 import humidity from "./humidity.png";
 
 export default function CurrentWeather() {
-  // const [state, setState] = useState({
-  //   weather: null,
-  //   weather_Update: null,
-  //   weather_Feedback: null,
-  //   weather_image: null,
-  //   weather_Location_City: null,
-  //   weather_Location_State: null,
-  //   weather_Location_Country: null,
-  //   weather_FeelsLike: null,
-  //   weather_Humidity: null,
-  //   weather_Wind: null,
-  //   weather_Visibility: null,
-  //   long: 40,
-  //   lat: 30,
-  // });
-
-  const [newdata, setnewdata] = useState("bathinda");
-  const [lati, setlati] = useState(20);
-  const [long, setlong] = useState(50);
-
+  const [newdata, setnewdata] = useState("");
+  const [lati, setlati] = useState("30");
+  const [long, setlong] = useState("75");
+  const [inputData, setinputData] = useState("");
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -33,57 +17,60 @@ export default function CurrentWeather() {
         setlong(position.coords.longitude);
 
         fetch(
-          `http://api.weatherstack.com/current?access_key=53f4ed0ce41f387bef450f839f69ec9b&query=${lati},${long}`
+          `http://api.openweathermap.org/data/2.5/weather?lat=${lati}&lon=${long}&appid=b368c2d17b8026e7fb04daa9f5a049cf`
         )
           .then((res) => res.json())
 
           .then((res) => {
             let allData = {
-              weather: res.current.temperature,
-              weather_Update: res.current.observation_time,
-              weather_Feedback: res.current.weather_descriptions,
-              weather_image: res.current.weather_icons,
-              weather_Location_City: res.location.name,
-              weather_Location_State: res.location.region,
-              weather_Location_Country: res.location.country,
-              weather_FeelsLike: res.current.feelslike,
-              weather_Humidity: res.current.humidity,
-              weather_Wind: res.current.wind_speed,
-              weather_Visibility: res.current.visibility,
+              weather: Math.floor(res.main.temp - 273),
+
+              weather_Feedback: res.weather[0].description,
+
+              weather_image: res.weather[0].icon,
+
+              weather_Location_City: res.name,
+
+              weather_Location_Country: res.sys.country,
+              weather_FeelsLike: Math.floor(res.main.feels_like - 273),
+              weather_Humidity: res.main.humidity,
+              weather_Wind: res.wind.speed,
+              weather_Visibility: res.visibility,
             };
             setnewdata(allData);
           });
       });
     }
-  }, [long, lati]);
+  }, [lati, long]);
+  const changeLocation = (value) => {
+    setinputData(value);
+  };
+  const changeWeather = (event) => {
+    event.preventDefault();
+    console.log(`hello`);
 
-  // const updateWeather = async () => {
-  //   navigator.geolocation.getCurrentPosition((position) => {
-  //     setState({
-  //       lat: position.coords.latitude,
-  //       long: position.coords.longitude,
-  //     });
-  //   });
-  //   const url = `https://api.weatherapi.com/v1/current.json?key=2bd5b807986a48c8b8d132658210809&q=${lat},${long}&aqi=no`;
-  //   let data = await fetch(url);
-  //   let parsedData = await data.json();
-  // setState({
-  //   weather: parsedData.current.temp_c,
-  //   weather_Update: parsedData.current.last_updated,
-  //   weather_Feedback: parsedData.current.condition.text,
-  //   weather_image: parsedData.current.condition.icon,
-  //   weather_Location_City: parsedData.location.name,
-  //   weather_Location_State: parsedData.location.region,
-  //   weather_Location_Country: parsedData.location.country,
-  //   weather_FeelsLike: parsedData.current.feelslike_c,
-  //   weather_Humidity: parsedData.current.humidity,
-  //   weather_Wind: parsedData.current.wind_kph,
-  //   weather_Visibility: parsedData.current.vis_km,
-  // });
+    fetch(
+      `http://api.openweathermap.org/data/2.5/weather?q=${inputData}&appid=b368c2d17b8026e7fb04daa9f5a049cf`
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        let allData = {
+          weather: Math.floor(res.main.temp - 273),
 
-  // useEffect(() => {
-  //   updateWeather();
-  // }, []);
+          weather_Feedback: res.weather[0].description,
+
+          weather_image: res.weather[0].icon,
+          weather_Location_City: res.name,
+
+          weather_Location_Country: res.sys.country,
+          weather_FeelsLike: Math.floor(res.main.feels_like - 273),
+          weather_Humidity: res.main.humidity,
+          weather_Wind: res.wind.speed,
+          weather_Visibility: res.visibility,
+        };
+        setnewdata(allData);
+      });
+  };
 
   return (
     <div
@@ -99,8 +86,15 @@ export default function CurrentWeather() {
           type="search"
           placeholder="Find Location"
           aria-label="Search"
+          onChange={(e) => {
+            changeLocation(e.target.value);
+          }}
         />
-        <button className="btn btn-outline-success" type="submit">
+        <button
+          className="btn btn-outline-success"
+          type="submit"
+          onClick={(e) => changeWeather(e)}
+        >
           Check!
         </button>
       </form>
@@ -112,18 +106,20 @@ export default function CurrentWeather() {
         />
         <div className="card-img-overlay">
           <p className="text-end card-title">
-            <img src={location} alt="..." /> {newdata.weather_Location_City},{" "}
-            {newdata.weather_Location_State}, {newdata.weather_Location_Country}
+            <img src={location} alt="{weat}" /> {newdata.weather_Location_City},
+            {newdata.weather_Location_Country}
           </p>
           <h1 className="card-title">
-            {newdata.weather} °C <img src={newdata.weather_image} alt="..." />
+            {newdata.weather} °C{" "}
+            <img
+              src={`http://openweathermap.org/img/w/${newdata.weather_image}.png`}
+              alt="icon"
+            />
           </h1>
           <h5 className="card-text"> {newdata.weather_Feedback} </h5>
           <p className="card-text">Feels Like {newdata.weather_FeelsLike} °C</p>
           <p className="card-text">
-            <small className="text-muted">
-              Last updated {newdata.weather_Update}
-            </small>
+            <small className="text-muted">Last updated</small>
           </p>
           <div
             style={{
@@ -139,7 +135,7 @@ export default function CurrentWeather() {
               <img src={wind} alt="..." /> {newdata.weather_Wind} Kph
             </p>
             <p className="card-text">
-              <img src={visibility} alt="..." /> {newdata.weather_Visibility} Km
+              <img src={visibility} alt="..." /> {newdata.weather_Visibility} m
             </p>
           </div>
         </div>
